@@ -16,7 +16,7 @@ export default function Navbar() {
 
 	return (
 		<>
-			<header className="fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4">
+			<header className="fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4 backdrop-blur-md dark:bg-white/1">
 				<div className="flex items-center h-full">
 					{mounted ? (
 						<Link href="/" aria-label="WHOP home">
