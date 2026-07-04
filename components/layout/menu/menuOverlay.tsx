@@ -6,7 +6,10 @@ import { useRef } from "react";
 import { NavLink } from "../textAnimations/wordRoll";
 import { ThemeToggleButton } from "@/components/theme/theme-button";
 import Image from "next/image";
+import { useCursorContext, useCursorVariant } from "../cursor/cursorContext";
 import { useTheme } from "next-themes";
+import AnimatedText from "../textAnimations/animatedText";
+import { CTAButtons } from "./ctaButton";
 
 const Links = [
 	{ title: "HOME", href: "/" },
@@ -33,6 +36,7 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 	const pathname = usePathname();
 	const containerRef = useRef<HTMLDivElement>(null);
 
+	const { setVariant } = useCursorContext();
 	const mouseY = useMotionValue(0);
 	const springY = useSpring(mouseY, { stiffness: 120, damping: 20, mass: 0.5 });
 
@@ -46,9 +50,15 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 		mouseY.set(relativeY * 2 - 1);
 	};
 
+	const handleMouseEnter = () => {
+		setVariant(theme === "dark" ? "dark-menu" : "light-menu");
+	};
+
 	const handleMouseLeave = () => {
 		mouseY.set(0);
+		setVariant("default");
 	};
+
 
 	return (
 		<AnimatePresence>
@@ -64,75 +74,19 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 					<div
 						ref={containerRef}
 						onMouseMove={handleMouseMove}
+						onMouseEnter={handleMouseEnter}
 						onMouseLeave={handleMouseLeave}
 						className="h-full w-full flex items-center justify-center backdrop-blur-xl"
 					>
-						<div className="h-full w-full flex p-8 gap-3 group">
-							<motion.div
-								style={{ y: col1Y }}
-								className="flex-1 flex flex-col gap-3"
-							>
-								{Video1.map((items, idx) => (
-									<div
-										key={idx}
-										className="group/card relative h-full w-full rounded-lg overflow-hidden transition-transform duration-300 ease-out group-hover:scale-90 hover:!scale-105"
-									>
-										<video
-											src={items.src}
-											aria-label={items.label}
-											autoPlay
-											loop
-											muted
-											playsInline
-											className="h-full w-full object-cover rounded-[10px]"
-										/>
+						<div className="h-full w-full flex flex-col items-center justify-center p-8 gap-8">
+							<AnimatedText
+								as="h1"
+								className="text-display-sm font-brier leading-none text-end"
+								text={"Join the future of work"}
+								staggerDelay={0.06}
+							/>
 
-										<div className="absolute inset-0 overflow-hidden rounded-[10px]">
-											<Image
-												src={theme === "dark" ? items.dark : items.light}
-												alt={items.label}
-												fill
-												sizes="(max-width: 1024px) 50vw, 25vw"
-												className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover/card:-translate-y-full pointer-event-none"
-											/>
-										</div>
-									</div>
-								))}
-							</motion.div>
-
-							{/* Right Column */}
-							<motion.div
-								style={{ y: col2Y }}
-								className="flex-1 flex flex-col gap-3"
-							>
-								{Video2.map((items, idx) => (
-									<div
-										key={idx}
-										className="group/card relative h-full w-full rounded-lg overflow-hidden transition-transform duration-300 ease-out group-hover:scale-90 hover:!scale-105"
-									>
-										<video
-											src={items.src}
-											aria-label={items.label}
-											autoPlay
-											loop
-											muted
-											playsInline
-											className="h-full w-full object-cover rounded-[10px]"
-										/>
-
-										{/* Image cover that swipes up on hover */}
-										<div className="absolute inset-0 overflow-hidden rounded-[10px]">
-											<Image
-												src={theme === "dark" ? items.dark : items.light}
-												alt={items.label}
-												fill
-												sizes="(max-width: 1024px) 50vw, 25vw"
-												className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover/card:-translate-y-full pointer-event-none"
-											/>
-										</div>
-									</div>
-								))}
-							</motion.div>
+							<CTAButtons />
 						</div>
 						<div className="h-full w-full flex flex-col items-center justify-center">
 							{Links.map((items, idx) => {

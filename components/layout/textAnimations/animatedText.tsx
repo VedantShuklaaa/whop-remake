@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useLoaderContext } from "@/components/loader/loaderContext";
 
@@ -9,6 +8,7 @@ interface AnimatedTextProps {
 	className?: string;
 	staggerDelay?: number;
 	startDelay?: number;
+	align?: "start" | "end" | "center";
 }
 
 export default function AnimatedText({
@@ -17,18 +17,21 @@ export default function AnimatedText({
 	className = "",
 	staggerDelay = 0.04,
 	startDelay = 0,
+	align = "start",
 }: AnimatedTextProps) {
 	const { loaderDone } = useLoaderContext();
 	const Tag = as;
 
 	const lines = text.split("\n");
+	const justifyClass =
+		align === "end" ? "justify-end" : align === "center" ? "justify-center" : "justify-start";
 
 	let wordIndex = 0;
 
 	return (
-		<Tag className={`flex flex-wrap ${as === "p" || as === "h1" ? "justify-end" : ""} ${className}`}>
+		<Tag className={`flex flex-wrap ${justifyClass} ${className}`}>
 			{lines.map((line, lineIdx) => (
-				<span key={lineIdx} className="flex flex-wrap justify-end w-full">
+				<span key={lineIdx} className={`flex flex-wrap ${justifyClass} w-full`}>
 					{line
 						.trim()
 						.split(" ")

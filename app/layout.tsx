@@ -6,6 +6,10 @@ import { Brier, MonaSans } from "@/fonts/fonts";
 import Navbar from "@/components/navbar/navbar";
 import { LoaderProvider } from "@/components/loader/loaderContext";
 import LoaderWrapper from "@/components/loader/loader";
+import { SmoothScroll } from "@/components/layout/lenis/smoothScroll";
+import { CursorDot } from "@/components/layout/cursor/cursorDot";
+import { MagnifyProvider } from "@/components/layout/magnifier/magnify";
+import { CursorProvider } from "@/components/layout/cursor/cursorContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,11 +44,18 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <LoaderProvider>
-            <LoaderWrapper src="/loader/whop_intro_final.mp4" />
-            <Navbar />
-            {children}
-          </LoaderProvider>
+          <CursorProvider>
+            <MagnifyProvider>
+              <CursorDot />
+              <SmoothScroll>
+                <LoaderProvider>
+                  <LoaderWrapper src="/loader/whop_intro_final.mp4" />
+                  <Navbar />
+                  {children}
+                </LoaderProvider>
+              </SmoothScroll>
+            </MagnifyProvider>
+          </CursorProvider>
         </ThemeProvider>
       </body>
     </html >
