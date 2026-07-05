@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: rgb(255, 255, 255);
+  --background: rgb(217, 217, 217);
   --foreground: rgb(26, 26, 26);
   --card: rgb(250, 250, 250);
   --card-foreground: rgb(31, 31, 31);

@@ -59,6 +59,7 @@ export function CursorDot() {
 	}, [cursorX, cursorY, isVisible]);
 
 	const activeColor = VARIANT_COLORS[variant];
+	const isMagnifying = magnifyState.active;
 
 	return (
 		<>
@@ -68,7 +69,7 @@ export function CursorDot() {
 				animate={{
 					width: isPointer ? 12 : 8,
 					height: isPointer ? 12 : 8,
-					opacity: isVisible && !magnifyState.active ? 1 : 0,
+					opacity: isVisible && !isMagnifying ? 1 : 0,
 					backgroundColor: activeColor,
 				}}
 				transition={{
@@ -83,14 +84,14 @@ export function CursorDot() {
 				className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full border"
 				style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
 				animate={{
-					width: isPointer ? 48 : 32,
-					height: isPointer ? 48 : 32,
-					opacity: isVisible && !magnifyState.active ? (isPointer ? 0.5 : 0.3) : 0,
+					width: isMagnifying ? 80 : isPointer ? 48 : 32,
+					height: isMagnifying ? 80 : isPointer ? 48 : 32,
+					opacity: isVisible ? (isMagnifying ? 0.6 : isPointer ? 0.5 : 0.3) : 0,
 					borderColor: activeColor,
 				}}
 				transition={{
-					width: { duration: 0.2, ease: "easeOut" },
-					height: { duration: 0.2, ease: "easeOut" },
+					width: { duration: 0.3, ease: [0.65, 0, 0.35, 1] },
+					height: { duration: 0.3, ease: [0.65, 0, 0.35, 1] },
 					opacity: { duration: 0.2, ease: "easeOut" },
 					borderColor: { duration: 0.35, ease: "easeInOut" },
 				}}
