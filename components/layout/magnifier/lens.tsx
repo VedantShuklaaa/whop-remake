@@ -17,7 +17,6 @@ export function MagnifyLens() {
 	const lensX = useSpring(x, springConfig);
 	const lensY = useSpring(y, springConfig);
 
-	// track raw mouse pos for lens positioning
 	useEffect(() => {
 		const move = (e: MouseEvent) => {
 			x.set(e.clientX);

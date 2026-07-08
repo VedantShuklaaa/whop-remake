@@ -63,14 +63,14 @@ export default function Hero() {
 				<div className="h-full w-full flex flex-col gap-5">
 					<AnimatedText
 						as="h1"
-						className="text-display-md font-brier leading-none"
+						className="text-display-md font-garamond leading-none"
 						text={"Build something\nthat people remember"}
 						staggerDelay={0.06}
 						align="end"
 					/>
 					<AnimatedText
 						as="p"
-						className="text-heading-lg font-brier leading-none"
+						className="text-heading-lg font-garamond leading-none"
 						text={"Turn bold ideas into unforgettable digital experiences\nwith design, motion, and development\nthat keeps people coming back."}
 						staggerDelay={0.03}
 						startDelay={0.5}

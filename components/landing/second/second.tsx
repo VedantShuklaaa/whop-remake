@@ -1,9 +1,15 @@
 "use client";
 import { ScrollSection } from "@/components/layout/scroll/scrollSection";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import AnimatedText from "@/components/layout/textAnimations/animatedText";
 import { useMagnify } from "@/components/layout/magnifier/magnify";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import StackingCards from "./stackingCard";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 
 const Stories = [
@@ -74,37 +80,81 @@ function StoryCard({ story, idx, isInView }: { story: typeof Stories[number]; id
 }
 
 export default function Second() {
-	const leftText = useRef<HTMLDivElement>(null);
-	const isInView = useInView(leftText, { once: true, margin: "-100px" });
-	const { ref, bind } = useMagnify();
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const cardRefs = useRef<HTMLDivElement[]>([]);
+	const [activeIndex, setActiveIndex] = useState(0);
+
+	useGSAP(
+		() => {
+			if (!wrapperRef.current) return;
+
+			const cards = cardRefs.current.filter(Boolean);
+
+			cards.forEach((card, index) => {
+				gsap.set(card, {
+					yPercent: index === 0 ? 0 : 100,
+					zIndex: index + 1,
+				});
+			});
+
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: wrapperRef.current,
+					start: "top top",
+					end: () => `+=${window.innerHeight * (cards.length - 1)}`,
+					pin: true,
+					scrub: true, 
+					anticipatePin: 1,
+					invalidateOnRefresh: true,
+					markers: true, 
+				},
+			});
+
+			cards.slice(1).forEach((card, i) => {
+				tl.to(card, {
+					yPercent: 0,
+					duration: 1,
+					ease: "none",
+					onStart: () => setActiveIndex(i + 1),
+					onReverseComplete: () => setActiveIndex(i),
+				});
+			});
+
+			const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 300);
+
+			return () => {
+				clearTimeout(refreshTimer);
+				tl.scrollTrigger?.kill();
+				tl.kill();
+			};
+		},
+		{ scope: wrapperRef }
+	);
 
 	return (
-		<ScrollSection className="relative w-full flex flex-col gap-2 overflow-hidden">
-			{/*<div className="absolute inset-0">
-				{Stories.map((story, idx) => (
-					<StoryCard key={story.name} story={story} idx={idx} isInView={isInView} />
-				))}
-			</div>*/}
+		<ScrollSection className="relative w-full">
+			<div className="flex flex-col gap-8 w-full">
+				<div className="w-full flex flex-col items-end justify-start p-8 gap-5 max-w-3xl ml-auto relative z-20">
+					<AnimatedText
+						as="h2"
+						className="text-display-md font-garamond leading-none w-full"
+						text={"Everything your next project needs."}
+						align="end"
+						staggerDelay={0.05}
+					/>
+					<AnimatedText
+						as="p"
+						className="text-heading-lg font-garamond leading-none w-full"
+						text={
+							"Whether you're starting from scratch\nor refining what already exists,\nevery decision should move your vision\ncloser to something people genuinely enjoy using."
+						}
+						align="end"
+						staggerDelay={0.03}
+						startDelay={0.5}
+					/>
+				</div>
 
-			<div ref={leftText} className="w-full flex flex-col items-start justify-start p-8 gap-5 max-w-3xl relative z-10">
-				<AnimatedText
-					as="h2"
-					className="text-display-md font-brier leading-none"
-					text={"Everything your next project needs."}
-					staggerDelay={0.05}
-				/>
-
-				<AnimatedText
-					as="p"
-					className="text-heading-lg font-brier leading-none"
-					text={"Whether you're starting from scratch\nor refining what already exists,\nevery decision should move your vision\ncloser to something people genuinely enjoy using."}
-					staggerDelay={0.03}
-					startDelay={0.5}
-				/>
-			</div>
-
-			<div className="h-screen w-full border rounded-t-[80px] bg-black/5 dark:bg-white/5 backdrop-blur-xl" ref={ref} {...bind}>
-
+				<StackingCards />
 			</div>
 		</ScrollSection>
 	);

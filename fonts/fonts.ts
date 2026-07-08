@@ -12,3 +12,4 @@ export const Brier = localFont({
 	variable: "--font-brier",
 	display: "swap",
 });
+

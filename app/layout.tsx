@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Brier, MonaSans } from "@/fonts/fonts";
@@ -10,6 +10,7 @@ import { SmoothScroll } from "@/components/layout/lenis/smoothScroll";
 import { CursorDot } from "@/components/layout/cursor/cursorDot";
 import { MagnifyProvider } from "@/components/layout/magnifier/magnify";
 import { CursorProvider } from "@/components/layout/cursor/cursorContext";
+import Footer from "@/components/footer/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const garamond = EB_Garamond({
+  variable: "--font-garamond",
+  subsets: ["latin"],
+  weight: ["400"]
 });
 
 export const metadata: Metadata = {
@@ -35,7 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${MonaSans.variable} ${Brier.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${MonaSans.variable} ${Brier.variable} ${garamond.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider
@@ -52,6 +59,7 @@ export default function RootLayout({
                   <LoaderWrapper src="/loader/whop_intro_final.mp4" />
                   <Navbar />
                   {children}
+                  <Footer />
                 </LoaderProvider>
               </SmoothScroll>
             </MagnifyProvider>

@@ -35,7 +35,7 @@ export default function AnimatedText({
 					{line
 						.trim()
 						.split(" ")
-						.map((word) => {
+						.map((word, i) => {
 							const currentIndex = wordIndex++;
 							return (
 								<motion.span
@@ -47,9 +47,9 @@ export default function AnimatedText({
 										delay: startDelay + currentIndex * staggerDelay,
 										ease: [0.65, 0, 0.35, 1],
 									}}
-									className="inline-block mr-[0.25em]"
+									className="inline-block"
 								>
-									{word}
+									<span key={i}>{word}&nbsp;</span>
 								</motion.span>
 							);
 						})}
