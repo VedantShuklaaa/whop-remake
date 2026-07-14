@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { NavLink } from "../layout/textAnimations/wordRoll";
+import { NavLink } from "../layout/textAnimations/navlink";
 
 const footerLinks = {
 	Solutions: [
@@ -39,7 +39,7 @@ const legalLinks = [
 
 export default function Footer() {
 	return (
-		<footer className="w-full bg-[#121212] dark:bg-[#d9d9d9] text-white dark:text-black rounded-t-[80px]">
+		<footer className="w-full bg-[#121212] dark:bg-[#d9d9d9] text-white dark:text-black rounded-t-[40px]">
 			<div className="mx-auto max-w-7xl px-6 py-16 sm:px-10">
 				<div className="flex items-start justify-between">
 					<div className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-4 sm:gap-x-16 lg:gap-x-25">

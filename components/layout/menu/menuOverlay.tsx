@@ -1,12 +1,11 @@
 "use client";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
-import { NavLink } from "../textAnimations/wordRoll";
+import { NavLink } from "../textAnimations/navlink";
 import { ThemeToggleButton } from "@/components/theme/theme-button";
-import Image from "next/image";
-import { useCursorContext, useCursorVariant } from "../cursor/cursorContext";
+import { useCursorContext } from "../cursor/cursorContext";
 import { useTheme } from "next-themes";
 import AnimatedText from "../textAnimations/animatedText";
 import { CTAButtons } from "./ctaButton";
@@ -18,22 +17,19 @@ const Links = [
 	{ title: "PRICING", href: "/pricing" },
 ];
 
-const Video1 = [
-	{ src: "/menu/sean.mov", label: "SEAN O MELLY", dark: "/utils/lrn_dark.png", light: "/utils/lrn_light.png" },
-	{ src: "/menu/tfue.mov", label: "TFUE", dark: "/utils/dscvr_dark.png", light: "/utils/dscvr_light.png" },
-]
-
-const Video2 = [
-	{ src: "/menu/jason.mov", label: "JASON", dark: "/utils/cnct_dark.png", light: "/utils/cnct_light.png" },
-	{ src: "/menu/lacy.mov", label: "LACY", dark: "/utils/ern_dark.png", light: "/utils/ern_light.png" },
-]
-
 const BASE_OFFSET = 10;
 const AMPLITUDE = 60;
+const CLOSE_DURATION = 0.6; // keep in sync with the transition below
 
-export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
+interface MenuOverlayProps {
+	isOpen: boolean;
+	onClose: () => void;
+}
+
+export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 	const { theme } = useTheme();
 	const pathname = usePathname();
+	const router = useRouter();
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const { setVariant } = useCursorContext();
@@ -59,6 +55,14 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 		setVariant("default");
 	};
 
+	const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+		e.preventDefault();
+		onClose(); // triggers the rolled-up exit animation via isOpen flipping false
+
+		setTimeout(() => {
+			router.push(href);
+		}, CLOSE_DURATION * 1000);
+	};
 
 	return (
 		<AnimatePresence>
@@ -68,7 +72,7 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 					initial={{ clipPath: "inset(0 0 100% 0)" }}
 					animate={{ clipPath: "inset(0 0 0% 0)" }}
 					exit={{ clipPath: "inset(0 0 100% 0)" }}
-					transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+					transition={{ duration: CLOSE_DURATION, ease: [0.65, 0, 0.35, 1] }}
 					className="fixed left-0 right-0 h-screen z-40 bg-primary border-t border-zinc-100 dark:border-zinc-900"
 				>
 					<div
@@ -96,7 +100,8 @@ export default function MenuOverlay({ isOpen }: { isOpen: boolean }) {
 									<Link
 										href={items.href}
 										key={idx}
-										className={`relative font-mona text-display-md leading-none hover:text-zinc-800 duration-300`}
+										onClick={(e) => handleLinkClick(e, items.href)}
+										className="relative font-mona text-display-md leading-none hover:text-zinc-800 duration-300"
 									>
 										<NavLink text={items.title} />
 

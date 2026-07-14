@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import { Brier, MonaSans } from "@/fonts/fonts";
+import { anton, Brier, garamond, MonaSans } from "@/fonts/fonts";
 import Navbar from "@/components/navbar/navbar";
 import { LoaderProvider } from "@/components/loader/loaderContext";
 import LoaderWrapper from "@/components/loader/loader";
@@ -22,11 +22,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const garamond = EB_Garamond({
-  variable: "--font-garamond",
-  subsets: ["latin"],
-  weight: ["400"]
-});
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -42,12 +38,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${MonaSans.variable} ${Brier.variable} ${garamond.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${MonaSans.variable} ${Brier.variable} ${garamond.variable} ${anton.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange={false}
         >

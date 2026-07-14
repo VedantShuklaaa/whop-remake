@@ -1,4 +1,5 @@
 import localFont from "next/font/local";
+import { Anton, EB_Garamond } from "next/font/google";
 
 export const MonaSans = localFont({
 	src: "./Mona-Sans-SemiBold.woff2",
@@ -13,3 +14,15 @@ export const Brier = localFont({
 	display: "swap",
 });
 
+
+export const anton = Anton({
+	variable: "--font-anton",
+	subsets: ["latin"],
+	weight: ["400"]
+})
+
+export const garamond = EB_Garamond({
+	variable: "--font-garamond",
+	subsets: ["latin"],
+	weight: ["400"]
+});

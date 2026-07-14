@@ -2,21 +2,46 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MenuToggle from "@/components/layout/menu/menuToggle";
 import MenuOverlay from "@/components/layout/menu/menuOverlay";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 
 export default function Navbar() {
 	const { theme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
+	const [hidden, setHidden] = useState(false);
+
+	const { scrollY } = useScroll();
+	const lastY = useRef(0);
 
 	useEffect(() => setMounted(true), []);
 
+	useMotionValueEvent(scrollY, "change", (latest) => {
+		const previous = lastY.current;
+		const diff = latest - previous;
+
+		if (Math.abs(diff) < 5) return;
+
+		if (isOpen) {
+			setHidden(false); 
+		} else if (diff > 0 && latest > 100) {
+			setHidden(true); 
+		} else {
+			setHidden(false); 
+		}
+
+		lastY.current = latest;
+	});
+
 	return (
 		<>
-			<header className={`fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4 backdrop-blur-md ${isOpen ? `dark:bg-white/1` : ""}`}>
+			<motion.header
+				animate={{ y: hidden ? "-100%" : "0%" }}
+				transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+				className={`fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4 backdrop-blur-md ${isOpen ? `dark:bg-white/1` : ""}`}
+			>
 				<div className="flex items-center h-full">
 					{mounted ? (
 						<Link href="/" aria-label="WHOP home">
@@ -70,9 +95,9 @@ export default function Navbar() {
 
 					<MenuToggle isOpen={isOpen} onClick={() => setIsOpen((prev) => !prev)} />
 				</nav>
-			</header>
+			</motion.header>
 
-			<MenuOverlay isOpen={isOpen} />
+			<MenuOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}/>
 		</>
 	);
 }

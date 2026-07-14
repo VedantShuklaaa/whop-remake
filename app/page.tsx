@@ -1,13 +1,15 @@
 import Hero from "@/components/landing/hero/heroText";
-import Second from "@/components/landing/second/second";
+import VideoSection from "@/components/landing/second/second";
+import Third from "@/components/landing/third/third";
 
 
 export default function Home() {
   return (
     <main className="flex flex-col items-end justify-start relative">
       <Hero />
-      <Second />
-      <div className="h-screen w-full"></div>
+      <div  className="h-[30vh] w-full"/>
+      <VideoSection />
+      <Third />
     </main>
   );
 }

@@ -148,6 +148,7 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
   --font-garamond: var(--font-garamond);
+  --font-anton: var(--font-anton);
 
   --font-mona: var(--font-mona);
   --font-brier: var(--font-brier);
@@ -193,4 +194,3 @@
     @apply bg-background text-foreground;
   }
 }
-

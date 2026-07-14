@@ -7,7 +7,7 @@ import { useMagnify } from "@/components/layout/magnifier/magnify";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import StackingCards from "./stackingCard";
+import Marquee from "@/components/layout/marquee/marquee";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -79,83 +79,139 @@ function StoryCard({ story, idx, isInView }: { story: typeof Stories[number]; id
 	);
 }
 
-export default function Second() {
-	const wrapperRef = useRef<HTMLDivElement>(null);
-	const cardRefs = useRef<HTMLDivElement[]>([]);
-	const [activeIndex, setActiveIndex] = useState(0);
+export default function VideoSection() {
+	const sectionRef = useRef<HTMLDivElement>(null);
+	const boxRef = useRef<HTMLDivElement>(null);
+	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useGSAP(
 		() => {
-			if (!wrapperRef.current) return;
+			const video = videoRef.current;
 
-			const cards = cardRefs.current.filter(Boolean);
-
-			cards.forEach((card, index) => {
-				gsap.set(card, {
-					yPercent: index === 0 ? 0 : 100,
-					zIndex: index + 1,
-				});
+			ScrollTrigger.create({
+				trigger: sectionRef.current,
+				start: "top top",
+				end: "bottom top",
+				onEnter: () => video?.play(),
+				onEnterBack: () => video?.play(),
+				onLeave: () => video?.pause(),
+				onLeaveBack: () => video?.pause(),
 			});
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
-					trigger: wrapperRef.current,
+					trigger: sectionRef.current,
 					start: "top top",
-					end: () => `+=${window.innerHeight * (cards.length - 1)}`,
+					end: "+=1000vh",
 					pin: true,
-					scrub: true, 
-					anticipatePin: 1,
-					invalidateOnRefresh: true,
-					markers: true, 
+					scrub: 1,
+					pinSpacing: true,
+					markers: true,
 				},
 			});
 
-			cards.slice(1).forEach((card, i) => {
-				tl.to(card, {
-					yPercent: 0,
-					duration: 1,
-					ease: "none",
-					onStart: () => setActiveIndex(i + 1),
-					onReverseComplete: () => setActiveIndex(i),
-				});
+			tl.to(boxRef.current, {
+				width: "100vw",
+				height: "100vh",
+				borderRadius: 0,
+				ease: "none",
 			});
-
-			const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 300);
-
-			return () => {
-				clearTimeout(refreshTimer);
-				tl.scrollTrigger?.kill();
-				tl.kill();
-			};
 		},
-		{ scope: wrapperRef }
+		{ scope: sectionRef }
 	);
 
 	return (
-		<ScrollSection className="relative w-full">
-			<div className="flex flex-col gap-8 w-full">
-				<div className="w-full flex flex-col items-end justify-start p-8 gap-5 max-w-3xl ml-auto relative z-20">
-					<AnimatedText
-						as="h2"
-						className="text-display-md font-garamond leading-none w-full"
-						text={"Everything your next project needs."}
-						align="end"
-						staggerDelay={0.05}
-					/>
-					<AnimatedText
-						as="p"
-						className="text-heading-lg font-garamond leading-none w-full"
-						text={
-							"Whether you're starting from scratch\nor refining what already exists,\nevery decision should move your vision\ncloser to something people genuinely enjoy using."
-						}
-						align="end"
-						staggerDelay={0.03}
-						startDelay={0.5}
-					/>
-				</div>
-
-				<StackingCards />
+		<section
+			ref={sectionRef}
+			className="h-screen w-full bg-black flex items-center justify-center relative"
+		>
+			<MarqueeBackground />
+			<div
+				ref={boxRef}
+				className="h-[40vh] w-[40vw] overflow-hidden z-11"
+			>
+				<video
+					ref={videoRef}
+					src="/videos/whop-btc-gold.mp4"
+					muted
+					loop
+					playsInline
+					className="h-full w-full object-cover"
+				/>
 			</div>
-		</ScrollSection>
+		</section>
 	);
+}
+
+
+const MarqueeBackground = () => {
+	return (
+		<div className="h-screen w-full pointer-event-none absolute inset-0 z-10 overflow-hidden">
+			<Marquee speed={60} direction="left">
+				{["AGENCY", "GAMES", "EVENTS", "NEWSPAPERS"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+
+			<Marquee speed={40} direction="right">
+				{["COMMUNITY", "MEMBERSHIP", "MONITIZATION", "MARKETPLACE"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+
+			<Marquee speed={60} direction="left">
+				{["TRADING", "CRYPTO", "STOCKS", "FOREX"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+
+			<Marquee speed={35} direction="right">
+				{["WORKFLOWS", "INTEGRATIONS", "PRODUCTIVITY", "OPTIMIZATIONS"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+
+			<Marquee speed={60} direction="left">
+				{["BUILD", "LAUNCH", "SCALE", "LEARN"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+
+			<Marquee speed={60} direction="right">
+				{["AUDIENCE", "GROWTH", "REVENUE", "CREATOR"].map((text, i) => (
+					<span
+						key={i}
+						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+					>
+						{text}
+					</span>
+				))}
+			</Marquee>
+		</div>
+	)
 }
