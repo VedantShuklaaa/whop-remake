@@ -151,7 +151,7 @@ const MarqueeBackground = () => {
 				{["AGENCY", "GAMES", "EVENTS", "NEWSPAPERS"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
@@ -162,7 +162,7 @@ const MarqueeBackground = () => {
 				{["COMMUNITY", "MEMBERSHIP", "MONITIZATION", "MARKETPLACE"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
@@ -173,7 +173,7 @@ const MarqueeBackground = () => {
 				{["TRADING", "CRYPTO", "STOCKS", "FOREX"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
@@ -184,7 +184,7 @@ const MarqueeBackground = () => {
 				{["WORKFLOWS", "INTEGRATIONS", "PRODUCTIVITY", "OPTIMIZATIONS"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
@@ -195,7 +195,7 @@ const MarqueeBackground = () => {
 				{["BUILD", "LAUNCH", "SCALE", "LEARN"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
@@ -206,7 +206,7 @@ const MarqueeBackground = () => {
 				{["AUDIENCE", "GROWTH", "REVENUE", "CREATOR"].map((text, i) => (
 					<span
 						key={i}
-						className="font-garamond text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
+						className="font-anton text-[11.4rem] leading-none whitespace-nowrap uppercase text-[#808080]"
 					>
 						{text}
 					</span>
