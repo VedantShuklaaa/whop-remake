@@ -46,7 +46,7 @@ export default function Navbar() {
 					{mounted ? (
 						<Link href="/" aria-label="WHOP home">
 							<Image
-								src={theme === "dark" ? "/logo/whop_3.png" : "/logo/whop_1.png"}
+								src={theme === "dark" ? "/logo/whop_3.png" : "/logo/Whop_1.png"}
 								height={100}
 								width={100}
 								alt="WHOP wordmark logo"
