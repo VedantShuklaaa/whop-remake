@@ -82,22 +82,10 @@ function StoryCard({ story, idx, isInView }: { story: typeof Stories[number]; id
 export default function VideoSection() {
 	const sectionRef = useRef<HTMLDivElement>(null);
 	const boxRef = useRef<HTMLDivElement>(null);
-	const videoRef = useRef<HTMLVideoElement>(null);
+	const fillRef = useRef<HTMLDivElement>(null);
 
 	useGSAP(
 		() => {
-			const video = videoRef.current;
-
-			ScrollTrigger.create({
-				trigger: sectionRef.current,
-				start: "top top",
-				end: "bottom top",
-				onEnter: () => video?.play(),
-				onEnterBack: () => video?.play(),
-				onLeave: () => video?.pause(),
-				onLeaveBack: () => video?.pause(),
-			});
-
 			const tl = gsap.timeline({
 				scrollTrigger: {
 					trigger: sectionRef.current,
@@ -110,12 +98,25 @@ export default function VideoSection() {
 				},
 			});
 
-			tl.to(boxRef.current, {
-				width: "100vw",
-				height: "100vh",
-				borderRadius: 0,
-				ease: "none",
-			});
+			gsap.set(fillRef.current, { scaleY: 0, transformOrigin: "center center" });
+
+			tl.to(
+				boxRef.current,
+				{
+					width: "100vw",
+					height: "100vh",
+					borderRadius: 0,
+					ease: "none",
+				},
+				0
+			).to(
+				fillRef.current,
+				{
+					scaleY: 1,
+					ease: "none",
+				},
+				0
+			);
 		},
 		{ scope: sectionRef }
 	);
@@ -128,15 +129,11 @@ export default function VideoSection() {
 			<MarqueeBackground />
 			<div
 				ref={boxRef}
-				className="h-[40vh] w-[40vw] overflow-hidden z-11"
+				className="h-[40vh] w-[40vw] overflow-hidden z-11 relative bg-white"
 			>
-				<video
-					ref={videoRef}
-					src="/videos/whop-btc-gold.mp4"
-					muted
-					loop
-					playsInline
-					className="h-full w-full object-cover"
+				<div
+					ref={fillRef}
+					className="absolute inset-0 bg-primary"
 				/>
 			</div>
 		</section>

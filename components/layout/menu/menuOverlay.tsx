@@ -2,7 +2,7 @@
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { NavLink } from "../textAnimations/navlink";
 import { ThemeToggleButton } from "@/components/theme/theme-button";
 import { useCursorContext } from "../cursor/cursorContext";
@@ -19,7 +19,7 @@ const Links = [
 
 const BASE_OFFSET = 10;
 const AMPLITUDE = 60;
-const CLOSE_DURATION = 0.6; // keep in sync with the transition below
+const CLOSE_DURATION = 0.6;
 
 interface MenuOverlayProps {
 	isOpen: boolean;
@@ -31,6 +31,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const containerRef = useRef<HTMLDivElement>(null);
+	const pendingHrefRef = useRef<string | null>(null);
 
 	const { setVariant } = useCursorContext();
 	const mouseY = useMotionValue(0);
@@ -57,15 +58,19 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 
 	const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
 		e.preventDefault();
-		onClose(); // triggers the rolled-up exit animation via isOpen flipping false
+		pendingHrefRef.current = href;
+		onClose();
+	};
 
-		setTimeout(() => {
-			router.push(href);
-		}, CLOSE_DURATION * 1000);
+	const handleExitComplete = () => {
+		if (pendingHrefRef.current) {
+			router.push(pendingHrefRef.current);
+			pendingHrefRef.current = null;
+		}
 	};
 
 	return (
-		<AnimatePresence>
+		<AnimatePresence onExitComplete={handleExitComplete}>
 			{isOpen && (
 				<motion.div
 					id="mobile-menu"
@@ -82,7 +87,10 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 						onMouseLeave={handleMouseLeave}
 						className="h-full w-full flex items-center justify-center backdrop-blur-xl"
 					>
-						<div className="h-full w-full flex flex-col items-center justify-center p-8 gap-8">
+						<motion.div
+							style={{ y: col1Y }}
+							className="h-full w-full flex flex-col items-center justify-center p-8 gap-8"
+						>
 							<AnimatedText
 								as="h1"
 								className="text-display-sm font-brier leading-none text-end"
@@ -91,8 +99,12 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 							/>
 
 							<CTAButtons />
-						</div>
-						<div className="h-full w-full flex flex-col items-center justify-center">
+						</motion.div>
+
+						<motion.div
+							style={{ y: col2Y }}
+							className="h-full w-full flex flex-col items-center justify-center"
+						>
 							{Links.map((items, idx) => {
 								const isActive = pathname === items.href;
 
@@ -125,7 +137,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 									</Link>
 								);
 							})}
-						</div>
+						</motion.div>
 					</div>
 
 					<ThemeToggleButton className="absolute right-4 bottom-4" />

@@ -50,14 +50,14 @@ export default function RootLayout({
           <CursorProvider>
             <MagnifyProvider>
               <CursorDot />
-              <SmoothScroll>
-                <LoaderProvider>
-                  <LoaderWrapper src="/loader/whop_intro_final.mp4" />
-                  <Navbar />
-                  {children}
-                  <Footer />
-                </LoaderProvider>
-              </SmoothScroll>
+              {/* <SmoothScroll>*/}
+              <LoaderProvider>
+                <LoaderWrapper src="/loader/whop_intro_final.mp4" />
+                <Navbar />
+                {children}
+                <Footer />
+              </LoaderProvider>
+              {/*</SmoothScroll>*/}
             </MagnifyProvider>
           </CursorProvider>
         </ThemeProvider>

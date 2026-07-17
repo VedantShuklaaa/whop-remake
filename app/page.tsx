@@ -7,9 +7,9 @@ export default function Home() {
   return (
     <main className="flex flex-col items-end justify-start relative">
       <Hero />
-      <div  className="h-[30vh] w-full"/>
-      <VideoSection />
+      <div className="h-[30vh] w-full" />
       <Third />
+     {/* <VideoSection /> */}
     </main>
   );
 }

@@ -43,7 +43,7 @@ export default function Page() {
 
 			<section className="h-screen w-full">
 				<motion.div
-					className="h-[70vh] w-full rounded-b-[40px] bg-background flex items-end"
+					className="h-[70vh] w-full bg-background flex items-end"
 					initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
 					animate={loaderDone ? { clipPath: "inset(0% 0% 0% 0%)" } : {}}
 					transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}

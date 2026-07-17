@@ -3,10 +3,12 @@ import { createContext, useContext, useRef, useState, ReactNode } from "react";
 
 interface MagnifyState {
 	active: boolean;
-	element: HTMLElement | null;
+	content: ReactNode | null;
 	rect: DOMRect | null;
 	relX: number;
 	relY: number;
+	zoomFactor: number;
+	lensSize: number;
 }
 
 interface MagnifyContextValue {
@@ -18,10 +20,12 @@ const MagnifyContext = createContext<MagnifyContextValue | null>(null);
 
 const initialState: MagnifyState = {
 	active: false,
-	element: null,
+	content: null,
 	rect: null,
 	relX: 0,
 	relY: 0,
+	zoomFactor: 1.5,
+	lensSize: 170,
 };
 
 export function MagnifyProvider({ children }: { children: ReactNode }) {

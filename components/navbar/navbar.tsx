@@ -25,11 +25,11 @@ export default function Navbar() {
 		if (Math.abs(diff) < 5) return;
 
 		if (isOpen) {
-			setHidden(false); 
+			setHidden(false);
 		} else if (diff > 0 && latest > 100) {
-			setHidden(true); 
+			setHidden(true);
 		} else {
-			setHidden(false); 
+			setHidden(false);
 		}
 
 		lastY.current = latest;
@@ -40,27 +40,11 @@ export default function Navbar() {
 			<motion.header
 				animate={{ y: hidden ? "-100%" : "0%" }}
 				transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-				className={`fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4 backdrop-blur-md ${isOpen ? `dark:bg-white/1` : ""}`}
+				className={`fixed top-0 left-0 z-50 h-[10vh] w-full flex items-center justify-between px-4 ${isOpen ? `dark:bg-white/1` : ""}`}
 			>
 				<div className="flex items-center h-full">
 					{mounted ? (
-						<Link href="/" aria-label="WHOP home">
-							<Image
-								src={theme === "dark" ? "/logo/whop_3.png" : "/logo/Whop_1.png"}
-								height={100}
-								width={100}
-								alt="WHOP wordmark logo"
-								priority
-							/>
-						</Link>
-					) : (
-						<div style={{ height: 100, width: 100 }} />
-					)}
-				</div>
-
-				<div className="flex items-center h-full">
-					{mounted ? (
-						<div className="relative" style={{ height: 90, width: 90 }}>
+						<div className="relative" style={{ height: 80, width: 80 }}>
 							<AnimatePresence mode="wait">
 								<motion.div
 									key={isOpen ? "logo2" : theme === "dark" ? "logo-dark" : "logo2-light"}
@@ -72,8 +56,8 @@ export default function Navbar() {
 								>
 									<Image
 										src={isOpen ? "/logo/logo2.png" : theme === "dark" ? "/logo/logo.png" : "/logo/logo2.png"}
-										height={90}
-										width={90}
+										height={80}
+										width={80}
 										alt="WHOP brand mark"
 										priority
 									/>
@@ -97,7 +81,7 @@ export default function Navbar() {
 				</nav>
 			</motion.header>
 
-			<MenuOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}/>
+			<MenuOverlay isOpen={isOpen} onClose={() => setIsOpen(false)} />
 		</>
 	);
 }
