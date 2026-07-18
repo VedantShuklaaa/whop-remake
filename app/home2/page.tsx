@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export default function Page() {
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const logoRef = useRef<HTMLVideoElement>(null);
+	const logoRef = useRef<HTMLDivElement>(null);
 
 	const { loaderDone } = useLoaderContext();
 
@@ -27,7 +27,6 @@ export default function Page() {
 			});
 
 			gsap.set(logoRef.current, {
-				y: -100,
 				opacity: 0,
 			});
 
@@ -41,10 +40,9 @@ export default function Page() {
 			}).to(
 				logoRef.current,
 				{
-					y: 0,
 					opacity: 1,
-					duration: 0.8,
-					ease: "power3.out",
+					duration: 1.2,
+					ease: "power1.out",
 				},
 				"-=0.25"
 			);
@@ -71,9 +69,6 @@ export default function Page() {
 					ease: "none",
 				}, 0);
 
-				tl.to(logoRef.current, {
-					scale: 1.5
-				}, 0);
 			});
 		},
 		{
@@ -90,7 +85,7 @@ export default function Page() {
 			>
 				<div
 					ref={containerRef}
-					className="absolute inset-0 flex items-center justify-center bg-[#141212] dark:bg-[#d9d9d9]"
+					className="absolute inset-0 flex items-center justify-center bg-card"
 				>
 					<Container logoRef={logoRef} />
 				</div>

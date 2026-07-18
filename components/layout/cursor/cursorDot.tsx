@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useCursorContext } from "./cursorContext";
-import { useMagnifyContext } from "../magnifier/magnify";
 
 const VARIANT_COLORS = {
 	default: "var(--color-primary)",
@@ -14,7 +13,6 @@ export function CursorDot() {
 	const [isVisible, setIsVisible] = useState(false);
 	const [isPointer, setIsPointer] = useState(false);
 	const { variant } = useCursorContext();
-	const { state: magnifyState } = useMagnifyContext();
 
 	const cursorX = useMotionValue(-100);
 	const cursorY = useMotionValue(-100);
@@ -59,7 +57,6 @@ export function CursorDot() {
 	}, [cursorX, cursorY, isVisible]);
 
 	const activeColor = VARIANT_COLORS[variant];
-	const isMagnifying = magnifyState.active;
 
 	return (
 		<>
@@ -69,7 +66,7 @@ export function CursorDot() {
 				animate={{
 					width: isPointer ? 12 : 8,
 					height: isPointer ? 12 : 8,
-					opacity: isVisible && !isMagnifying ? 1 : 0,
+					opacity: isVisible ? 1 : 0,
 					backgroundColor: activeColor,
 				}}
 				transition={{
@@ -84,9 +81,9 @@ export function CursorDot() {
 				className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full border"
 				style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
 				animate={{
-					width: isMagnifying ? 80 : isPointer ? 48 : 32,
-					height: isMagnifying ? 80 : isPointer ? 48 : 32,
-					opacity: isVisible ? (isMagnifying ? 0.6 : isPointer ? 0.5 : 0.3) : 0,
+					width: isPointer ? 48 : 32,
+					height: isPointer ? 48 : 32,
+					opacity: isVisible ? (isPointer ? 0.5 : 0.3) : 0,
 					borderColor: activeColor,
 				}}
 				transition={{

@@ -1,40 +1,23 @@
 'use client';
-import { RefObject, useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
+import { RefObject } from "react";
+import { useLoaderContext } from "@/components/loader/loaderContext";
+import { ScrollSection } from "@/components/layout/scroll/scrollSection";
 
 interface ContainerProps {
-	logoRef: RefObject<HTMLVideoElement | null>;
+	logoRef: RefObject<HTMLDivElement | null>;
 }
 
 export const Container = ({ logoRef }: ContainerProps) => {
-	const { resolvedTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		setMounted(true);
-	}, []);
-
-	if (!mounted) return null;
-
-	const src =
-		resolvedTheme === "dark"
-			? "/videos/Whop_logo_art_dark.webm"
-			: "/videos/Whop_logo_art_dark.webm";
+	const { loaderDone } = useLoaderContext();
 
 	return (
-		<motion.video
-			key={src}
-			ref={logoRef}
-			src={src}
-			height={900}
-			width={900}
-			className="object-cover"
-			autoPlay
-			muted
-			loop
-			playsInline
-			preload="auto"
-		/>
+		<ScrollSection>
+			<h1
+				ref={logoRef}
+				className="text-[14rem] font-bold font-brier text-center text-primary opacity-0"
+			>
+				Whop
+			</h1>
+		</ScrollSection>
 	);
 };

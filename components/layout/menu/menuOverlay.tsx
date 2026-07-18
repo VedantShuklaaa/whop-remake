@@ -1,14 +1,17 @@
 "use client";
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { NavLink } from "../textAnimations/navlink";
-import { ThemeToggleButton } from "@/components/theme/theme-button";
 import { useCursorContext } from "../cursor/cursorContext";
 import { useTheme } from "next-themes";
 import AnimatedText from "../textAnimations/animatedText";
 import { CTAButtons } from "./ctaButton";
+import { ThemeToggleNavButton } from "@/components/theme/theme-button";
+
+gsap.registerPlugin(useGSAP);
 
 const Links = [
 	{ title: "HOME", href: "/" },
@@ -30,29 +33,58 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 	const { theme } = useTheme();
 	const pathname = usePathname();
 	const router = useRouter();
+
+	const overlayRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const col1Ref = useRef<HTMLDivElement>(null);
+	const col2Ref = useRef<HTMLDivElement>(null);
+	const dashRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
+
 	const pendingHrefRef = useRef<string | null>(null);
-
 	const { setVariant } = useCursorContext();
-	const mouseY = useMotionValue(0);
-	const springY = useSpring(mouseY, { stiffness: 120, damping: 20, mass: 0.5 });
 
-	const col1Y = useTransform(springY, [-1, 1], [BASE_OFFSET + AMPLITUDE, BASE_OFFSET - AMPLITUDE]);
-	const col2Y = useTransform(springY, [-1, 1], [-BASE_OFFSET - AMPLITUDE, -BASE_OFFSET + AMPLITUDE]);
+	// Drive the parallax columns manually (replaces useMotionValue/useSpring/useTransform)
+	const targetY = useRef(0);
+	const currentY = useRef(0);
+	const rafRef = useRef<number | null>(null);
 
-	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-		const rect = containerRef.current?.getBoundingClientRect();
-		if (!rect) return;
-		const relativeY = (e.clientY - rect.top) / rect.height;
-		mouseY.set(relativeY * 2 - 1);
-	};
+	useGSAP(() => {
+		if (!overlayRef.current) return;
+
+		// Initial state: clipped closed, hidden from interaction/a11y until open
+		gsap.set(overlayRef.current, {
+			clipPath: "inset(0 0 100% 0)",
+			pointerEvents: "none",
+		});
+	}, []);
+
+	useGSAP(() => {
+		if (!overlayRef.current) return;
+
+		const tween = gsap.to(overlayRef.current, {
+			clipPath: isOpen ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)",
+			duration: CLOSE_DURATION,
+			ease: isOpen ? "power4.out" : "power3.inOut",
+			pointerEvents: isOpen ? "auto" : "none",
+			onComplete: () => {
+				if (!isOpen && pendingHrefRef.current) {
+					router.push(pendingHrefRef.current);
+					pendingHrefRef.current = null;
+				}
+			},
+		});
+
+		return () => {
+			tween.kill();
+		};
+	}, [isOpen]);
 
 	const handleMouseEnter = () => {
 		setVariant(theme === "dark" ? "dark-menu" : "light-menu");
 	};
 
 	const handleMouseLeave = () => {
-		mouseY.set(0);
+		targetY.current = 0;
 		setVariant("default");
 	};
 
@@ -62,87 +94,72 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 		onClose();
 	};
 
-	const handleExitComplete = () => {
-		if (pendingHrefRef.current) {
-			router.push(pendingHrefRef.current);
-			pendingHrefRef.current = null;
-		}
-	};
+	useGSAP(() => {
+		Links.forEach((item, idx) => {
+			const el = dashRefs.current.get(idx);
+			if (!el) return;
+			const isActive = pathname === item.href;
+
+			gsap.to(el, {
+				scaleX: isActive ? 1 : 0,
+				transformOrigin: isActive ? "left center" : "right center",
+				duration: 0.5,
+				ease: "power3.inOut",
+			});
+		});
+	}, [pathname]);
 
 	return (
-		<AnimatePresence onExitComplete={handleExitComplete}>
-			{isOpen && (
-				<motion.div
-					id="mobile-menu"
-					initial={{ clipPath: "inset(0 0 100% 0)" }}
-					animate={{ clipPath: "inset(0 0 0% 0)" }}
-					exit={{ clipPath: "inset(0 0 100% 0)" }}
-					transition={{ duration: CLOSE_DURATION, ease: [0.65, 0, 0.35, 1] }}
-					className="fixed left-0 right-0 h-screen z-40 bg-primary border-t border-zinc-100 dark:border-zinc-900"
+		<div
+			ref={overlayRef}
+			id="mobile-menu"
+			aria-hidden={!isOpen}
+			className="fixed left-0 right-0 top-0 h-screen z-40 bg-primary border-t border-zinc-100 dark:border-zinc-900"
+		>
+			<div
+				ref={containerRef}
+				onMouseEnter={handleMouseEnter}
+				onMouseLeave={handleMouseLeave}
+				className="h-full w-full flex items-center justify-center backdrop-blur-xl"
+			>
+				<div
+					ref={col1Ref}
+					className="h-full w-full flex flex-col items-center justify-center p-8 gap-8"
 				>
-					<div
-						ref={containerRef}
-						onMouseMove={handleMouseMove}
-						onMouseEnter={handleMouseEnter}
-						onMouseLeave={handleMouseLeave}
-						className="h-full w-full flex items-center justify-center backdrop-blur-xl"
-					>
-						<motion.div
-							style={{ y: col1Y }}
-							className="h-full w-full flex flex-col items-center justify-center p-8 gap-8"
+					<AnimatedText
+						as="h1"
+						className="text-display-sm font-brier leading-none text-end"
+						text={"Join the future of work"}
+						staggerDelay={0.06}
+					/>
+
+					<CTAButtons />
+				</div>
+
+				<div
+					ref={col2Ref}
+					className="h-full w-full flex flex-col items-center justify-center"
+				>
+					{Links.map((item, idx) => (
+						<Link
+							href={item.href}
+							key={idx}
+							onClick={(e) => handleLinkClick(e, item.href)}
+							className="relative font-mona text-display-md leading-none hover:text-zinc-800 duration-300"
 						>
-							<AnimatedText
-								as="h1"
-								className="text-display-sm font-brier leading-none text-end"
-								text={"Join the future of work"}
-								staggerDelay={0.06}
+							<NavLink text={item.title} />
+
+							<span
+								ref={(el) => {
+									if (el) dashRefs.current.set(idx, el);
+									else dashRefs.current.delete(idx);
+								}}
+								className="absolute top-1/2 left-0 right-0 h-[6px] bg-zinc-800 -translate-y-1/2 scale-x-0"
 							/>
-
-							<CTAButtons />
-						</motion.div>
-
-						<motion.div
-							style={{ y: col2Y }}
-							className="h-full w-full flex flex-col items-center justify-center"
-						>
-							{Links.map((items, idx) => {
-								const isActive = pathname === items.href;
-
-								return (
-									<Link
-										href={items.href}
-										key={idx}
-										onClick={(e) => handleLinkClick(e, items.href)}
-										className="relative font-mona text-display-md leading-none hover:text-zinc-800 duration-300"
-									>
-										<NavLink text={items.title} />
-
-										<AnimatePresence>
-											{isActive && (
-												<motion.span
-													key={`dash-${idx}`}
-													variants={{
-														initial: { scaleX: 0, originX: 0 },
-														animate: { scaleX: 1, originX: 0 },
-														exit: { scaleX: 0, originX: 1 },
-													}}
-													initial="initial"
-													animate="animate"
-													exit="exit"
-													className="absolute top-1/2 left-0 right-0 h-[6px] bg-zinc-800 -translate-y-1/2"
-													transition={{ duration: 0.5, ease: [0.65, 0, 0.35, 1] }}
-												/>
-											)}
-										</AnimatePresence>
-									</Link>
-								);
-							})}
-						</motion.div>
-					</div>
-
-					<ThemeToggleButton className="absolute right-4 bottom-4" />
-				</motion.div>
-			)}
-		</AnimatePresence>
+						</Link>
+					))}
+				</div>
+			</div>
+		</div>
 	);
 }

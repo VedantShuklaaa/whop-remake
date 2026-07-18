@@ -39,19 +39,19 @@ const legalLinks = [
 
 export default function Footer() {
 	return (
-		<footer className="w-full bg-[#121212] dark:bg-[#d9d9d9] text-white dark:text-black rounded-t-[40px]">
+		<footer className="w-full bg-card rounded-t-[40px]">
 			<div className="mx-auto max-w-7xl px-6 py-16 sm:px-10">
 				<div className="flex items-start justify-between">
 					<div className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-4 sm:gap-x-16 lg:gap-x-25">
 						{Object.entries(footerLinks).map(([section, links]) => (
 							<div key={section} className="flex flex-col gap-4">
-								<p className="text-sm font-semibold text-white dark:text-black">{section}</p>
+								<p className="text-sm font-semibold">{section}</p>
 								<div className="flex flex-col gap-3">
 									{links.map((link) => (
 										<Link
 											key={link.label}
 											href={link.href}
-											className="text-sm text-white/60 transition-colors hover:text-primary dark:text-black/60 dark:hover:text-primary"
+											className="text-sm transition-colors hover:text-primary dark:hover:text-primary"
 										>
 											<NavLink text={link.label}/>
 										</Link>
@@ -71,8 +71,8 @@ export default function Footer() {
 					</Link>
 				</div>
 
-				<div className="mt-16 flex flex-col-reverse items-center justify-between gap-6 border-t border-white/10 pt-8 sm:flex-row">
-					<p className="text-sm text-white/50 dark:text-black/50">
+				<div className="mt-16 flex flex-col-reverse items-center justify-between gap-6 border-t border-black/10 dark:border-white/10 pt-8 sm:flex-row">
+					<p className="text-sm text-black/50 dark:text-white/50">
 						© {new Date().getFullYear()} Whop Inc. All rights reserved.
 					</p>
 
@@ -81,7 +81,7 @@ export default function Footer() {
 							<Link
 								key={link.label}
 								href={link.href}
-								className="text-sm text-white/60 dark:text-black/60 transition-colors hover:text-white dark:hover:text-black"
+								className="text-sm text-black/60 dark:text-white/60 transition-colors hover:text-black dark:hover:text-white"
 							>
 								{link.label}
 							</Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useLoaderContext } from "./loaderContext";
 
 interface LoaderProps {
@@ -16,7 +16,7 @@ export function Loader({ src, onComplete }: LoaderProps) {
 
 	const [videoEnded, setVideoEnded] = useState(false);
 	const [pageLoaded, setPageLoaded] = useState(false);
-	const [visible, setVisible] = useState(true);
+	const hasCompletedRef = useRef(false);
 
 	useEffect(() => {
 		if (document.readyState === "complete") {
@@ -45,36 +45,30 @@ export function Loader({ src, onComplete }: LoaderProps) {
 	const shutterOpen = videoEnded && pageLoaded;
 
 	return (
-		<AnimatePresence>
-			{visible && (
-				<motion.div
-					key="loader"
-					ref={containerRef}
-					className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
-					initial={{ y: "0%", opacity: 1 }}
-					animate={shutterOpen ? { y: "-100%", opacity: 1 } : { y: "0%", opacity: 1 }}
-					exit={{ opacity: 0 }}
-					transition={shutterOpen ? { duration: 0.9, ease: [0.76, 0, 0.24, 1] } : undefined}
-					onAnimationComplete={() => {
-						if (shutterOpen) {
-							onComplete?.();
-							setVisible(false);
-						}
-					}}
-				>
-					<video
-						ref={videoRef}
-						src={src}
-						muted
-						playsInline
-						className="h-[50%] w-[50%] object-cover"
-					/>
-				</motion.div>
-			)}
-		</AnimatePresence>
+		<motion.div
+			ref={containerRef}
+			className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
+			initial={{ y: "0%" }}
+			animate={{ y: shutterOpen ? "-100%" : "0%" }}
+			style={{ pointerEvents: shutterOpen ? "none" : "auto" }}
+			transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+			onAnimationComplete={() => {
+				if (shutterOpen && !hasCompletedRef.current) {
+					hasCompletedRef.current = true;
+					onComplete?.();
+				}
+			}}
+		>
+			<video
+				ref={videoRef}
+				src={src}
+				muted
+				playsInline
+				className="h-[50%] w-[50%] object-cover"
+			/>
+		</motion.div>
 	);
 }
-
 
 export default function LoaderWrapper({ src }: { src: string }) {
 	const { setLoaderDone } = useLoaderContext();

@@ -48,17 +48,15 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <CursorProvider>
-            <MagnifyProvider>
-              <CursorDot />
-              {/* <SmoothScroll>*/}
-              <LoaderProvider>
-                <LoaderWrapper src="/loader/whop_intro_final.mp4" />
-                <Navbar />
-                {children}
-                <Footer />
-              </LoaderProvider>
-              {/*</SmoothScroll>*/}
-            </MagnifyProvider>
+            <CursorDot />
+            {/* <SmoothScroll>*/}
+            <LoaderProvider>
+              <LoaderWrapper src="/loader/whop_intro_final.mp4" />
+              <Navbar />
+              {children}
+              <Footer />
+            </LoaderProvider>
+            {/*</SmoothScroll>*/}
           </CursorProvider>
         </ThemeProvider>
       </body>

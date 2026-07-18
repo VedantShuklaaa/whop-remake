@@ -1,4 +1,4 @@
-"use client";
+{/*"use client";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useMagnifyContext } from "./magnify";
@@ -85,4 +85,4 @@ export function MagnifyLens() {
 			)}
 		</motion.div>
 	);
-}
+}*/}
