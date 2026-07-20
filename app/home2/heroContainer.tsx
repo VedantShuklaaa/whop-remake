@@ -12,7 +12,7 @@ export const Title = ({ logoRef }: TitleProps) => {
 			<h1
 				ref={logoRef}
 				className="font-bold font-anton text-center text-primary opacity-0 flex items-center justify-center px-4"
-				style={{fontSize: "5000%"}}
+				style={{fontSize: "500%"}}
 			>
 				Whop
 			</h1>
