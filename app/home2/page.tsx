@@ -4,8 +4,10 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Container } from "./heroContainer";
+import { Subheading, Title } from "./heroContainer";
 import { useLoaderContext } from "@/components/loader/loaderContext";
+import VideoWallBackground from "@/components/layout/background/background2";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -13,6 +15,7 @@ export default function Page() {
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const logoRef = useRef<HTMLDivElement>(null);
+	const subheadingRef = useRef<HTMLDivElement>(null);
 
 	const { loaderDone } = useLoaderContext();
 
@@ -20,7 +23,6 @@ export default function Page() {
 		() => {
 			if (!loaderDone) return;
 
-			// Initial state
 			gsap.set(containerRef.current, {
 				scale: 0,
 				transformOrigin: "center center",
@@ -30,7 +32,10 @@ export default function Page() {
 				opacity: 0,
 			});
 
-			// Intro animation
+			gsap.set(subheadingRef.current, {
+				opacity: 0,
+			});
+
 			const intro = gsap.timeline();
 
 			intro.to(containerRef.current, {
@@ -45,9 +50,12 @@ export default function Page() {
 					ease: "power1.out",
 				},
 				"-=0.25"
-			);
+			).to(subheadingRef.current, {
+				opacity: 1,
+				duration: 1.2,
+				ease: "power1.out",
+			}, "<");
 
-			// Create ScrollTrigger after intro finishes
 			intro.add(() => {
 				const tl = gsap.timeline({
 					scrollTrigger: {
@@ -69,6 +77,14 @@ export default function Page() {
 					ease: "none",
 				}, 0);
 
+				tl.to(logoRef.current, {
+					scale: 0.9,
+				}, 0);
+
+				tl.to(subheadingRef.current, {
+					scale: 0.9,
+				}, 0);
+
 			});
 		},
 		{
@@ -85,9 +101,20 @@ export default function Page() {
 			>
 				<div
 					ref={containerRef}
-					className="absolute inset-0 flex items-center justify-center bg-card"
+					className="absolute inset-0 flex flex-col justify-end overflow-hidden bg-card"
 				>
-					<Container logoRef={logoRef} />
+					<div className="p-4 flex-1 min-h-0 hidden">
+						<video
+							src="/videos/w.mp4"
+							autoPlay
+							loop
+							muted
+							playsInline
+							className="rounded-2xl h-full w-full object-cover"
+						/>
+					</div>
+					{/*<Subheading subheadingRef={subheadingRef} />*/}
+					<Title logoRef={logoRef} />
 				</div>
 			</section>
 
